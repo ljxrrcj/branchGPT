@@ -1,0 +1,35 @@
+.message-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.message-list--empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.empty-state {
+  text-align: center;
+  color: var(--text-secondary);
+  max-width: 24rem;
+}
+
+.empty-state h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.empty-state p {
+  margin-bottom: 0.5rem;
+}
+
+.empty-state-hint {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  font-style: italic;
+}
