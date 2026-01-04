@@ -55,17 +55,20 @@ export class OllamaClient implements ILLMClient {
 
     const data = (await response.json()) as OllamaResponse;
 
-    return {
+    const result: LLMResponse = {
       content: data.message.content,
       model: data.model,
-      usage: data.prompt_eval_count !== undefined && data.eval_count !== undefined
-        ? {
-            promptTokens: data.prompt_eval_count,
-            completionTokens: data.eval_count,
-            totalTokens: data.prompt_eval_count + data.eval_count,
-          }
-        : undefined,
     };
+
+    if (data.prompt_eval_count !== undefined && data.eval_count !== undefined) {
+      result.usage = {
+        promptTokens: data.prompt_eval_count,
+        completionTokens: data.eval_count,
+        totalTokens: data.prompt_eval_count + data.eval_count,
+      };
+    }
+
+    return result;
   }
 
   async *stream(config: LLMRequestConfig): AsyncGenerator<StreamChunk> {

@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { MessageItem } from './MessageItem';
-import type { Message } from '@types/conversation';
+import type { Message } from '@/types/conversation';
 import './MessageList.css';
 
 interface MessageListProps {

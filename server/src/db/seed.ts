@@ -1,4 +1,4 @@
-import { pool, closePool, withTransaction } from './client.js';
+import { closePool, withTransaction } from './client.js';
 import type pg from 'pg';
 
 async function seedDatabase(): Promise<void> {

@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import type { ViewMode, ViewState, Viewport, ZoomPhase } from '@types/view';
+import type { ViewMode, ViewState, Viewport, ZoomPhase } from '@/types/view';
 
 const DEFAULT_VIEWPORT: Viewport = {
   x: 0,
@@ -24,7 +24,7 @@ interface ViewStoreState extends ViewState {
   resetViewport: () => void;
 }
 
-export const useViewStore = create<ViewStoreState>((set, get) => ({
+export const useViewStore = create<ViewStoreState>((set, _get) => ({
   mode: 'chat',
   viewport: { ...DEFAULT_VIEWPORT },
   isInputVisible: true,

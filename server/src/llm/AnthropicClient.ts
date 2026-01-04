@@ -37,7 +37,7 @@ export class AnthropicClient implements ILLMClient {
       {
         model: config.model,
         max_tokens: config.maxTokens ?? 4096,
-        system: systemMessage?.content,
+        ...(systemMessage?.content && { system: systemMessage.content }),
         messages,
       },
       { signal: this.abortController.signal }
@@ -76,7 +76,7 @@ export class AnthropicClient implements ILLMClient {
       {
         model: config.model,
         max_tokens: config.maxTokens ?? 4096,
-        system: systemMessage?.content,
+        ...(systemMessage?.content && { system: systemMessage.content }),
         messages,
         stream: true,
       },

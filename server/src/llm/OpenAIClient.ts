@@ -28,8 +28,8 @@ export class OpenAIClient implements ILLMClient {
       {
         model: config.model,
         messages: config.messages,
-        max_tokens: config.maxTokens,
-        temperature: config.temperature,
+        ...(config.maxTokens !== undefined && { max_tokens: config.maxTokens }),
+        ...(config.temperature !== undefined && { temperature: config.temperature }),
       },
       { signal: this.abortController.signal }
     );
@@ -39,17 +39,20 @@ export class OpenAIClient implements ILLMClient {
       throw new Error('No response from OpenAI');
     }
 
-    return {
+    const result: LLMResponse = {
       content: choice.message.content ?? '',
       model: response.model,
-      usage: response.usage
-        ? {
-            promptTokens: response.usage.prompt_tokens,
-            completionTokens: response.usage.completion_tokens,
-            totalTokens: response.usage.total_tokens,
-          }
-        : undefined,
     };
+
+    if (response.usage) {
+      result.usage = {
+        promptTokens: response.usage.prompt_tokens,
+        completionTokens: response.usage.completion_tokens,
+        totalTokens: response.usage.total_tokens,
+      };
+    }
+
+    return result;
   }
 
   async *stream(config: LLMRequestConfig): AsyncGenerator<StreamChunk> {
@@ -63,8 +66,8 @@ export class OpenAIClient implements ILLMClient {
       {
         model: config.model,
         messages: config.messages,
-        max_tokens: config.maxTokens,
-        temperature: config.temperature,
+        ...(config.maxTokens !== undefined && { max_tokens: config.maxTokens }),
+        ...(config.temperature !== undefined && { temperature: config.temperature }),
         stream: true,
       },
       { signal: this.abortController.signal }
