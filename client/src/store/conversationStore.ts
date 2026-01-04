@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import type { Message, BranchNode, Conversation, ConversationTree, BranchSourceType } from '@types/conversation';
+import type { Message, BranchNode, Conversation, ConversationTree, BranchSourceType } from '@/types/conversation';
 
 function generateId(): string {
   return crypto.randomUUID();
@@ -189,7 +189,7 @@ export const useConversationStore = create<ConversationState>((set, get) => ({
     });
   },
 
-  createBranch: (parentId, sourceType) => {
+  createBranch: (parentId, _sourceType) => {
     const { activeConversationId, conversations } = get();
     if (!activeConversationId) {
       throw new Error('No active conversation');

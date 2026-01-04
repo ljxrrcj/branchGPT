@@ -1,4 +1,4 @@
-import type { Message } from '@types/conversation';
+import type { Message } from '@/types/conversation';
 import './MessageItem.css';
 
 interface MessageItemProps {

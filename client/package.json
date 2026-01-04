@@ -17,8 +17,8 @@
   "dependencies": {
     "@branchgpt/shared": "*",
     "@tanstack/react-query": "^5.17.0",
-    "@trpc/client": "^10.45.0",
-    "@trpc/react-query": "^10.45.0",
+    "@trpc/client": "^11.0.0",
+    "@trpc/react-query": "^11.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "reactflow": "^11.10.0",
