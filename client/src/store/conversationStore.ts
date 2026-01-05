@@ -1,8 +1,32 @@
 import { create } from 'zustand';
 import type { Message, BranchNode, Conversation, ConversationTree, BranchSourceType } from '@/types/conversation';
 
+/**
+ * Custom error class for conversation store errors
+ */
+export class ConversationStoreError extends Error {
+  constructor(
+    message: string,
+    public readonly code: string,
+    public readonly context?: Record<string, unknown>
+  ) {
+    super(message);
+    this.name = 'ConversationStoreError';
+  }
+}
+
+/**
+ * Generate a unique ID for messages and conversations
+ * @throws {ConversationStoreError} If ID generation fails
+ */
 function generateId(): string {
-  return crypto.randomUUID();
+  try {
+    return crypto.randomUUID();
+  } catch (error) {
+    // Fallback for environments without crypto.randomUUID
+    console.warn('crypto.randomUUID not available, using fallback');
+    return `${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
+  }
 }
 
 interface ConversationState {
@@ -87,12 +111,19 @@ export const useConversationStore = create<ConversationState>((set, get) => ({
   addMessage: (messageData) => {
     const { activeConversationId, conversations } = get();
     if (!activeConversationId) {
-      throw new Error('No active conversation');
+      throw new ConversationStoreError(
+        'No active conversation. Please create or select a conversation first.',
+        'NO_ACTIVE_CONVERSATION'
+      );
     }
 
     const tree = conversations.get(activeConversationId);
     if (!tree) {
-      throw new Error('Conversation not found');
+      throw new ConversationStoreError(
+        'Conversation not found. The conversation may have been deleted.',
+        'CONVERSATION_NOT_FOUND',
+        { conversationId: activeConversationId }
+      );
     }
 
     const id = generateId();
@@ -192,17 +223,28 @@ export const useConversationStore = create<ConversationState>((set, get) => ({
   createBranch: (parentId, _sourceType) => {
     const { activeConversationId, conversations } = get();
     if (!activeConversationId) {
-      throw new Error('No active conversation');
+      throw new ConversationStoreError(
+        'No active conversation. Please create or select a conversation first.',
+        'NO_ACTIVE_CONVERSATION'
+      );
     }
 
     const tree = conversations.get(activeConversationId);
     if (!tree) {
-      throw new Error('Conversation not found');
+      throw new ConversationStoreError(
+        'Conversation not found. The conversation may have been deleted.',
+        'CONVERSATION_NOT_FOUND',
+        { conversationId: activeConversationId }
+      );
     }
 
     const parentNode = tree.nodes.get(parentId);
     if (!parentNode) {
-      throw new Error('Parent node not found');
+      throw new ConversationStoreError(
+        'Parent message not found. Cannot create branch from a non-existent message.',
+        'PARENT_NOT_FOUND',
+        { parentId, conversationId: activeConversationId }
+      );
     }
 
     // The branch is created when a new message is added to the parent
